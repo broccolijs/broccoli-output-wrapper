@@ -11,7 +11,6 @@
     "test:debug": "yarn build && mocha --inspect-brk -r ts-node/register"
   },
   "dependencies": {
-    "broccoli-node-api": "^1.7.0",
     "heimdalljs-logger": "^0.1.10"
   },
   "devDependencies": {

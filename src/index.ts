@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import { TransformNode } from 'broccoli-node-api';
 import { isAbsolute, resolve } from 'path';
 
 const logger = require('heimdalljs-logger')('broccoli:outputWrapper');
@@ -16,11 +15,7 @@ const WHITELISTEDOPERATION = new Set([
   'mkdirSync'
 ]);
 
-interface TransformNodeWrapper extends TransformNode {
-  outputPath: string
-}
-
-function handleFs(target: any, propertyName: string, node: TransformNodeWrapper, relativePath: string, ...fsArguments: Array<string>) {
+function handleFs(target: any, propertyName: string, node: any, relativePath: string, ...fsArguments: Array<string>) {
   if (isAbsolute(relativePath)) {
     throw new Error(`Relative path is expected, path ${relativePath} is an absolute path.`);
   }
@@ -36,7 +31,7 @@ function handleFs(target: any, propertyName: string, node: TransformNodeWrapper,
   }
 }
 
-export default function outputWrapper (node: TransformNodeWrapper) {
+export default function outputWrapper (node: any): any {
   return new Proxy(fs, {
     get(target: any, propertyName: string): any {
       return handleFs.bind(this, target, propertyName, node);
