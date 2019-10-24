@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import { isAbsolute, resolve } from 'path';
+import { FSOperations } from './interfaces';
 
 const logger = require('heimdalljs-logger')('broccoli:outputWrapper');
 
@@ -31,7 +32,7 @@ function handleFs(target: any, propertyName: string, node: any, relativePath: st
   }
 }
 
-export default function outputWrapper (node: any): any {
+export default function outputWrapper (node: any): FSOperations {
   return new Proxy(fs, {
     get(target: any, propertyName: string): any {
       return handleFs.bind(this, target, propertyName, node);

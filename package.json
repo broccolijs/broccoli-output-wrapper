@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Output wrapper is a library to write output file to outputpath.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "author": "sparshithNR <nairbali@usc.edu>",
   "license": "MIT",
   "scripts": {
