@@ -1,4 +1,4 @@
-import buidlOutputWrapper from '../src';
+import buildOutputWrapper from '../src';
 const tmp = require('tmp');
 import * as fs from 'fs';
 import { expect } from 'chai';
@@ -11,7 +11,7 @@ describe('output-wrapper', function() {
     node = {
       outputPath: temp.name,
     };
-    output = buidlOutputWrapper(node);
+    output = buildOutputWrapper(node);
   });
 
   it('should write to given location', function() {
