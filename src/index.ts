@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { isAbsolute, resolve } from 'path';
-import { FSOperations } from './interfaces';
+import { readFileSync, existsSync, readdirSync, lstatSync, statSync, writeFileSync, appendFileSync, rmdirSync, mkdirSync } from 'fs';
 
 const logger = require('heimdalljs-logger')('broccoli:outputWrapper');
 
@@ -32,10 +32,25 @@ function handleFs(target: any, propertyName: string, node: any, relativePath: st
   }
 }
 
-export default function outputWrapper (node: any): FSOperations {
+function outputWrapper (node: any): outputWrapper.FSOperations {
   return new Proxy(fs, {
     get(target: any, propertyName: string): any {
       return handleFs.bind(this, target, propertyName, node);
     }
   });
+}
+export = outputWrapper;
+
+namespace outputWrapper {
+  export interface FSOperations {
+    readFileSync: typeof readFileSync,
+    existsSync: typeof existsSync,
+    lstatSync: typeof lstatSync,
+    readdirSync: typeof readdirSync,
+    statSync: typeof statSync,
+    writeFileSync: typeof writeFileSync,
+    appendFileSync: typeof appendFileSync,
+    rmdirSync: typeof rmdirSync,
+    mkdirSync: typeof mkdirSync
+  }
 }
