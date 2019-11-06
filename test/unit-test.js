@@ -1,7 +1,7 @@
-import buildOutputWrapper from '../src';
+const buildOutputWrapper = require('../src');
 const tmp = require('tmp');
-import * as fs from 'fs';
-import { expect } from 'chai';
+const fs = require('fs');
+const { expect } = require('chai');
 
 describe('output-wrapper', function() {
   let output, temp, node;
