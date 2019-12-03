@@ -32,7 +32,7 @@ function handleFs(target: any, propertyName: string, node: any, relativePath: st
   }
 }
 
-function outputWrapper (node: any): outputWrapper.FSOperations {
+function outputWrapper (node: any): outputWrapper.FSOutput {
   return new Proxy(fs, {
     get(target: any, propertyName: string): any {
       return handleFs.bind(this, target, propertyName, node);
@@ -42,7 +42,7 @@ function outputWrapper (node: any): outputWrapper.FSOperations {
 export = outputWrapper;
 
 namespace outputWrapper {
-  export interface FSOperations {
+  export interface FSOutput {
     readFileSync: typeof readFileSync,
     existsSync: typeof existsSync,
     lstatSync: typeof lstatSync,
