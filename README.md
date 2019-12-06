@@ -12,7 +12,13 @@ This libary is not intended to use independently outside broccoli or broccoli-pl
 * statSync
 * writeFileSync
 * appendFileSync
-* rmdirSync
 * mkdirSync
+* unlinkSync
 
 All these operations above are same as File Operations documented in node API [guide](https://nodejs.org/api/fs.html).
+
+* rmdirSync
+
+Perform same operation as node [guide](https://nodejs.org/api/fs.html#fs_fs_rmdirsync_path_options).
+We have polyfilled `recursive: true` option to perform a recursive directory removal. In recursive mode, errors are not reported if path does not exist, and operations are retried on failure. Default: false
+* [symlinkOrCopySync](https://github.com/broccolijs/node-symlink-or-copy#node-symlink-or-copy)
