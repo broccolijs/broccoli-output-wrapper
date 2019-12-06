@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import { isAbsolute, resolve } from 'path';
 import { readFileSync, existsSync, readdirSync, lstatSync, statSync, writeFileSync, appendFileSync, rmdirSync, mkdirSync } from 'fs';
+import { removeSync } from 'fs-extra';
+const symlinkOrCopySync = require('symlink-or-copy').sync;
 
 const logger = require('heimdalljs-logger')('broccoli:outputWrapper');
 
@@ -13,10 +15,17 @@ const WHITELISTEDOPERATION = new Set([
   'writeFileSync',
   'appendFileSync',
   'rmdirSync',
-  'mkdirSync'
+  'mkdirSync',
+  'unlinkSync',
+  'symlinkOrCopySync'
 ]);
 
-function handleFs(target: any, propertyName: string, node: any, relativePath: string, ...fsArguments: Array<string>) {
+function handleFs(target: any, propertyName: string, node: any, relativePath: string, ...fsArguments: Array<any>) {
+  let srcPath = '';
+  if (propertyName === 'symlinkOrCopySync') {
+    srcPath = relativePath;
+    relativePath = fsArguments[0];
+  }
   if (isAbsolute(relativePath)) {
     throw new Error(`Relative path is expected, path ${relativePath} is an absolute path.`);
   }
@@ -26,7 +35,16 @@ function handleFs(target: any, propertyName: string, node: any, relativePath: st
   }
   if(WHITELISTEDOPERATION.has(propertyName)) {
     logger.debug(`[operation:${propertyName}] at ${outputPath}`);
-    return target[propertyName](outputPath, ...fsArguments);
+    switch (propertyName) {
+      case 'symlinkOrCopySync':
+        return symlinkOrCopySync(srcPath, outputPath);
+      case 'rmdirSync':
+        if (fsArguments[0] && fsArguments[0].recursive) {
+          return removeSync(outputPath);
+        }
+      default:
+        return target[propertyName](outputPath, ...fsArguments);
+    }
   } else {
     throw new Error(`Operation ${propertyName} is not allowed to use. Allowed operations are ${Array.from(WHITELISTEDOPERATION).toString()}`);
   }
@@ -51,6 +69,8 @@ namespace outputWrapper {
     writeFileSync: typeof writeFileSync,
     appendFileSync: typeof appendFileSync,
     rmdirSync: typeof rmdirSync,
-    mkdirSync: typeof mkdirSync
+    mkdirSync: typeof mkdirSync,
+    unlinkSync: typeof fs.unlinkSync,
+    symlinkOrCopy: (srcPath: string, destPath: string) => void
   }
 }
