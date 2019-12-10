@@ -71,6 +71,6 @@ namespace outputWrapper {
     rmdirSync: typeof rmdirSync,
     mkdirSync: typeof mkdirSync,
     unlinkSync: typeof fs.unlinkSync,
-    symlinkOrCopy: (srcPath: string, destPath: string) => void
+    symlinkOrCopySync: (srcPath: string, destPath: string) => void
   }
 }
