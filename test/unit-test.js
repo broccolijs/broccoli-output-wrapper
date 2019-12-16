@@ -21,10 +21,9 @@ describe('output-wrapper', function() {
     expect(content).to.be.equal('test');
   });
 
-  it(`throws actionable error when absolute path is provided`, function() {
-    expect(() => output.writeFileSync(`${temp.name}/test.md`, 'test')).to.throw(
-      `Relative path is expected, path ${temp.name}/test.md is an absolute path.`
-    );
+  it(`takes absolute path as input`, function() {
+    output.writeFileSync('test.md', 'test');
+    expect(output.existsSync(`${temp.name}/test.md`, 'test')).to.be.true;
   });
 
   it(`throws actionable error when relative path is traverses above outputPath`, function() {
@@ -35,7 +34,7 @@ describe('output-wrapper', function() {
 
   it(`should not allow other fs operations`, function() {
     expect(() => output.writevSync('test.md', 'test')).to.throw(
-      /^Operation writevSync is not allowed to use. Allowed operations are readFileSync,existsSync,lstatSync,readdirSync,statSync,writeFileSync,appendFileSync,rmdirSync,mkdirSync,unlinkSync,symlinkOrCopySync$/
+      /^Operation writevSync is not allowed to use. Allowed operations are readFileSync,existsSync,lstatSync,readdirSync,statSync,writeFileSync,appendFileSync,rmdirSync,mkdirSync,unlinkSync,symlinkOrCopySync,symlinkSync,utimesSync$/
     );
   });
 

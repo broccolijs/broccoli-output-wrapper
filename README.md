@@ -14,6 +14,8 @@ This libary is not intended to use independently outside broccoli or broccoli-pl
 * appendFileSync
 * mkdirSync
 * unlinkSync
+* symlinkSync
+* utimesSync
 
 All these operations above are same as File Operations documented in node API [guide](https://nodejs.org/api/fs.html).
 
