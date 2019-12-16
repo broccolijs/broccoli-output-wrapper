@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { isAbsolute, resolve } from 'path';
-import { readFileSync, existsSync, readdirSync, lstatSync, statSync, writeFileSync, appendFileSync, rmdirSync, mkdirSync } from 'fs';
+import { readFileSync, existsSync, readdirSync, lstatSync, statSync, writeFileSync, appendFileSync, rmdirSync, mkdirSync, symlinkSync, utimesSync } from 'fs';
 import { removeSync } from 'fs-extra';
 const symlinkOrCopySync = require('symlink-or-copy').sync;
 
@@ -17,7 +17,9 @@ const WHITELISTEDOPERATION = new Set([
   'rmdirSync',
   'mkdirSync',
   'unlinkSync',
-  'symlinkOrCopySync'
+  'symlinkOrCopySync',
+  'symlinkSync',
+  'utimesSync'
 ]);
 
 function handleFs(target: any, propertyName: string, node: any, relativePath: string, ...fsArguments: Array<any>) {
@@ -26,13 +28,15 @@ function handleFs(target: any, propertyName: string, node: any, relativePath: st
     srcPath = relativePath;
     relativePath = fsArguments[0];
   }
-  if (isAbsolute(relativePath)) {
-    throw new Error(`Relative path is expected, path ${relativePath} is an absolute path.`);
+
+  let outputPath = relativePath;
+  if (!isAbsolute(relativePath)) {
+    outputPath = resolve(node.outputPath + '/' + relativePath);
+    if (!outputPath.includes(node.outputPath)) {
+      throw new Error(`Traversing above the outputPath is not allowed. Relative path ${relativePath} traverses beyond ${node.outputPath}`);
+    }
   }
-  let outputPath = resolve(node.outputPath + '/' + relativePath);
-  if (!outputPath.includes(node.outputPath)) {
-    throw new Error(`Traversing above the outputPath is not allowed. Relative path ${relativePath} traverses beyond ${node.outputPath}`);
-  }
+
   if(WHITELISTEDOPERATION.has(propertyName)) {
     logger.debug(`[operation:${propertyName}] at ${outputPath}`);
     switch (propertyName) {
@@ -71,6 +75,8 @@ namespace outputWrapper {
     rmdirSync: typeof rmdirSync,
     mkdirSync: typeof mkdirSync,
     unlinkSync: typeof fs.unlinkSync,
-    symlinkOrCopySync: (srcPath: string, destPath: string) => void
+    symlinkOrCopySync: (srcPath: string, destPath: string) => void,
+    symlinkSync: typeof symlinkSync,
+    utimesSync: typeof utimesSync
   }
 }
