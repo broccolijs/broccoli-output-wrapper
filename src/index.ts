@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { isAbsolute, resolve } from 'path';
 import { readFileSync, existsSync, readdirSync, lstatSync, statSync, writeFileSync, appendFileSync, rmdirSync, mkdirSync, symlinkSync, utimesSync } from 'fs';
-import { removeSync } from 'fs-extra';
+import { removeSync, outputFileSync } from 'fs-extra';
 const symlinkOrCopySync = require('symlink-or-copy').sync;
 
 const logger = require('heimdalljs-logger')('broccoli:outputWrapper');
@@ -19,7 +19,8 @@ const WHITELISTEDOPERATION = new Set([
   'unlinkSync',
   'symlinkOrCopySync',
   'symlinkSync',
-  'utimesSync'
+  'utimesSync',
+  'outputFileSync'
 ]);
 
 function handleFs(target: any, propertyName: string, node: any, relativePath: string, ...fsArguments: Array<any>) {
@@ -42,6 +43,10 @@ function handleFs(target: any, propertyName: string, node: any, relativePath: st
     switch (propertyName) {
       case 'symlinkOrCopySync':
         return symlinkOrCopySync(srcPath, outputPath);
+      case 'outputFileSync':
+        const content = fsArguments[0];
+        fsArguments.shift();
+        return outputFileSync(outputPath, content, ...fsArguments);
       case 'rmdirSync':
         if (fsArguments[0] && fsArguments[0].recursive) {
           return removeSync(outputPath);

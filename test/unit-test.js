@@ -34,7 +34,7 @@ describe('output-wrapper', function() {
 
   it(`should not allow other fs operations`, function() {
     expect(() => output.writevSync('test.md', 'test')).to.throw(
-      /^Operation writevSync is not allowed to use. Allowed operations are readFileSync,existsSync,lstatSync,readdirSync,statSync,writeFileSync,appendFileSync,rmdirSync,mkdirSync,unlinkSync,symlinkOrCopySync,symlinkSync,utimesSync$/
+      /^Operation writevSync is not allowed to use. Allowed operations are readFileSync,existsSync,lstatSync,readdirSync,statSync,writeFileSync,appendFileSync,rmdirSync,mkdirSync,unlinkSync,symlinkOrCopySync,symlinkSync,utimesSync,outputFileSync$/
     );
   });
 
@@ -62,6 +62,11 @@ describe('output-wrapper', function() {
     output.symlinkOrCopySync(`${temp_in}/test.md`, `test.md`);
     expect(fs.realpathSync(`${temp.name}/test.md`)).to.be.contains(path.join(temp_in,'test.md'));
     expect(output.lstatSync('test.md').isSymbolicLink()).to.be.true;
+  });
+
+  it('can create file with outputFileSync', function () {
+    output.outputFileSync(`asset/test.md`, `test`);
+    expect(output.readFileSync('asset/test.md', 'utf-8')).to.be.equal('test');
   });
 
   it(`should throw if the dir strutcture doesn't exist and attempt to write`, function() {
