@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { isAbsolute, resolve } from 'path';
-import { readFileSync, existsSync, readdirSync, lstatSync, statSync, writeFileSync, appendFileSync, rmdirSync, mkdirSync, symlinkSync, utimesSync } from 'fs';
+import { readFileSync, existsSync, readdirSync, lstatSync, statSync, writeFileSync, appendFileSync, mkdirSync, symlinkSync, utimesSync } from 'fs';
 import { removeSync, outputFileSync } from 'fs-extra';
 const symlinkOrCopySync = require('symlink-or-copy').sync;
 
@@ -77,7 +77,8 @@ namespace outputWrapper {
     statSync: typeof statSync,
     writeFileSync: typeof writeFileSync,
     appendFileSync: typeof appendFileSync,
-    rmdirSync: typeof rmdirSync,
+    // TODO: node 10 reaches EOL and node 12 becomes LTS, we should revert this change.
+    rmdirSync: (path: string, options?: { recursive?: boolean; }) => void,
     mkdirSync: typeof mkdirSync,
     unlinkSync: typeof fs.unlinkSync,
     symlinkOrCopySync: (srcPath: string, destPath: string) => void,
