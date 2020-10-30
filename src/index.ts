@@ -53,7 +53,7 @@ function handleFs(target: any, propertyName: string, node: any, relativePath: st
         }
       case "mkdirSync": {
         if (fsArguments[0] && fsArguments[0].recursive) {
-          return mkdirpSync(outputPath, ...fsArguments);
+          return mkdirpSync(outputPath);
         }
       }
       default:
