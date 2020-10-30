@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { isAbsolute, resolve } from 'path';
 import { readFileSync, existsSync, readdirSync, lstatSync, statSync, writeFileSync, appendFileSync, mkdirSync, symlinkSync, utimesSync } from 'fs';
-import { removeSync, outputFileSync } from 'fs-extra';
+import { removeSync, outputFileSync, mkdirpSync } from 'fs-extra';
 const symlinkOrCopySync = require('symlink-or-copy').sync;
 
 const logger = require('heimdalljs-logger')('broccoli:outputWrapper');
@@ -51,6 +51,11 @@ function handleFs(target: any, propertyName: string, node: any, relativePath: st
         if (fsArguments[0] && fsArguments[0].recursive) {
           return removeSync(outputPath);
         }
+      case "mkdirSync": {
+        if (fsArguments[0] && fsArguments[0].recursive) {
+          return mkdirpSync(outputPath, ...fsArguments);
+        }
+      }
       default:
         return target[propertyName](outputPath, ...fsArguments);
     }
