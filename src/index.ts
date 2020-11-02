@@ -51,7 +51,7 @@ function handleFs(target: any, propertyName: string, node: any, relativePath: st
         if (fsArguments[0] && fsArguments[0].recursive) {
           return removeSync(outputPath);
         }
-      case "mkdirSync": {
+      case 'mkdirSync': {
         if (fsArguments[0] && fsArguments[0].recursive) {
           return mkdirpSync(outputPath);
         }
