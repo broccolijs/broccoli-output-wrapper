@@ -38,6 +38,19 @@ describe('output-wrapper', function() {
     );
   });
 
+  it('can create folder recursively', function() {
+    let SUBFOLDER_PATH = 'main/sub';
+    expect(fs.existsSync(`${temp.name}/${SUBFOLDER_PATH}`)).to.be.false;
+    output.mkdirSync(SUBFOLDER_PATH, { recursive: true });
+    expect(fs.existsSync(`${temp.name}/${SUBFOLDER_PATH}`)).to.be.true;
+  });
+
+  it('can create folder non recursive', function() {
+    expect(fs.existsSync(`${temp.name}/test`)).to.be.false;
+    output.mkdirSync('test');
+    expect(fs.existsSync(`${temp.name}/test`)).to.be.true;
+  });
+
   it('can remove folder recursively', function() {
     output.mkdirSync('test');
     expect(fs.existsSync(`${temp.name}/test`)).to.be.true;
